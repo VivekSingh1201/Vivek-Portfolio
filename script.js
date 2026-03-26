@@ -1,119 +1,186 @@
 'use strict';
 
+// ============================================================
+//  Vivek Kumar Singh Portfolio — script.js (Modern Redesign)
+// ============================================================
 
+/* ---- AOS (Animate On Scroll) ---- */
+AOS.init({
+  duration: 700,
+  easing: 'ease-out-cubic',
+  once: true,
+  offset: 60,
+});
 
-// element toggle function
-const elementToggleFunc = function (elem) { elem.classList.toggle("active"); }
-
-
-
-// sidebar variables
-const sidebar = document.querySelector("[data-sidebar]");
-const sidebarBtn = document.querySelector("[toggle]");
-
-// sidebar toggle functionality for mobile
-sidebarBtn.addEventListener("click", function () { elementToggleFunc(sidebar); });
-
-
-// custom select variables
-const select = document.querySelector("[data-select]");
-const selectItems = document.querySelectorAll("[data-select-item]");
-const selectValue = document.querySelector("[data-selecct-value]");
-const filterBtn = document.querySelectorAll("[data-filter-btn]");
-
-select.addEventListener("click", function () { elementToggleFunc(this); });
-
-// add event in all select items
-for (let i = 0; i < selectItems.length; i++) {
-  selectItems[i].addEventListener("click", function () {
-
-    let selectedValue = this.innerText.toLowerCase();
-    selectValue.innerText = this.innerText;
-    elementToggleFunc(select);
-    filterFunc(selectedValue);
-
+/* ---- Typed.js — sidebar title ---- */
+if (document.querySelector('#typed-title')) {
+  new Typed('#typed-title', {
+    strings: ['CSE Student', 'Web Developer', 'ML Enthusiast', 'DSA Problem Solver'],
+    typeSpeed: 55,
+    backSpeed: 35,
+    backDelay: 1800,
+    loop: true,
+    showCursor: true,
+    cursorChar: '|',
   });
 }
 
-// filter variables
-const filterItems = document.querySelectorAll("[data-filter-item]");
+/* ---- Particles.js ---- */
+if (typeof particlesJS !== 'undefined') {
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 55, density: { enable: true, value_area: 900 } },
+      color: { value: '#6366f1' },
+      shape: { type: 'circle' },
+      opacity: { value: 0.25, random: true, anim: { enable: true, speed: 0.6, opacity_min: 0.05, sync: false } },
+      size: { value: 2, random: true },
+      line_linked: { enable: true, distance: 140, color: '#6366f1', opacity: 0.1, width: 1 },
+      move: { enable: true, speed: 0.8, direction: 'none', random: true, straight: false, out_mode: 'out' },
+    },
+    interactivity: {
+      detect_on: 'canvas',
+      events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: false }, resize: true },
+      modes: { grab: { distance: 160, line_linked: { opacity: 0.3 } } },
+    },
+    retina_detect: true,
+  });
+}
 
-const filterFunc = function (selectedValue) {
+/* ---- Cursor Glow Effect ---- */
+const cursorGlow = document.getElementById('cursorGlow');
+if (cursorGlow) {
+  document.addEventListener('mousemove', (e) => {
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top  = e.clientY + 'px';
+  });
+}
 
-  for (let i = 0; i < filterItems.length; i++) {
-
-    if (selectedValue === "all") {
-      filterItems[i].classList.add("active");
-    } else if (selectedValue === filterItems[i].dataset.category) {
-      filterItems[i].classList.add("active");
-    } else {
-      filterItems[i].classList.remove("active");
-    }
-
+/* ---- Navbar scroll shadow ---- */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (navbar) {
+    navbar.style.boxShadow = window.scrollY > 10
+      ? '0 4px 30px rgba(0,0,0,0.5)'
+      : 'none';
   }
+}, { passive: true });
 
-}
+/* ---- Mobile sidebar toggle ---- */
+const menuToggle = document.getElementById('menuToggle');
+const sidebar    = document.getElementById('sidebar');
 
-// add event in all filter button items for large screen
-let lastClickedBtn = filterBtn[0];
-
-for (let i = 0; i < filterBtn.length; i++) {
-
-  filterBtn[i].addEventListener("click", function () {
-
-    let selectedValue = this.innerText.toLowerCase();
-    selectValue.innerText = this.innerText;
-    filterFunc(selectedValue);
-
-    lastClickedBtn.classList.remove("active");
-    this.classList.add("active");
-    lastClickedBtn = this;
-
+if (menuToggle && sidebar) {
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
   });
 
-}
-
-
-
-// contact form variables
-const form = document.querySelector("[data-form]");
-const formInputs = document.querySelectorAll("[data-form-input]");
-const formBtn = document.querySelector("[data-form-btn]");
-
-// add event to all form input field
-for (let i = 0; i < formInputs.length; i++) {
-  formInputs[i].addEventListener("input", function () {
-
-    // check form validation
-    if (form.checkValidity()) {
-      formBtn.removeAttribute("disabled");
-    } else {
-      formBtn.setAttribute("disabled", "");
+  // Close sidebar when clicking outside
+  document.addEventListener('click', (e) => {
+    if (sidebar.classList.contains('open') &&
+        !sidebar.contains(e.target) &&
+        !menuToggle.contains(e.target)) {
+      sidebar.classList.remove('open');
     }
-
   });
 }
 
+/* ---- Page Navigation ---- */
+const navBtns = document.querySelectorAll('[data-nav-link]');
+const pages   = document.querySelectorAll('[data-page]');
 
+navBtns.forEach((btn) => {
+  btn.addEventListener('click', function () {
+    const target = this.textContent.toLowerCase();
 
-// page navigation variables
-const navigationLinks = document.querySelectorAll("[data-nav-link]");
-const pages = document.querySelectorAll("[data-page]");
+    pages.forEach((page) => {
+      page.classList.toggle('active', page.dataset.page === target);
+    });
 
-// add event to all nav link
-for (let i = 0; i < navigationLinks.length; i++) {
-  navigationLinks[i].addEventListener("click", function () {
+    navBtns.forEach((b) => b.classList.remove('active'));
+    this.classList.add('active');
 
-    for (let i = 0; i < pages.length; i++) {
-      if (this.innerHTML.toLowerCase() === pages[i].dataset.page) {
-        pages[i].classList.add("active");
-        navigationLinks[i].classList.add("active");
-        window.scrollTo(0, 0);
-      } else {
-        pages[i].classList.remove("active");
-        navigationLinks[i].classList.remove("active");
-      }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Animate skill bars when Resume tab is opened
+    if (target === 'resume') animateSkillBars();
+
+    // Refresh AOS on tab switch
+    setTimeout(() => AOS.refresh(), 100);
+  });
+});
+
+/* ---- Skill Bar Animation ---- */
+function animateSkillBars() {
+  document.querySelectorAll('.skill-fill').forEach((fill) => {
+    const width = fill.dataset.width || '0';
+    fill.style.width = '0';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        fill.style.width = width + '%';
+      });
+    });
+  });
+}
+
+// Animate on first load if About is already selected (resume can be triggered later)
+// Trigger on load if resume tab is active by default
+if (document.querySelector('[data-page="resume"].active')) {
+  animateSkillBars();
+}
+
+/* ---- Project Filter ---- */
+const filterBtns  = document.querySelectorAll('[data-filter-btn]');
+const filterItems = document.querySelectorAll('[data-filter-item]');
+const selectBox   = document.querySelector('[data-select]');
+const selectItems = document.querySelectorAll('[data-select-item]');
+const selectVal   = document.querySelector('[data-selecct-value]');
+
+function filterProjects(value) {
+  filterItems.forEach((item) => {
+    const match = value === 'all' || item.dataset.category === value;
+    item.classList.toggle('active', match);
+
+    // Subtle re-entry animation
+    if (match) {
+      item.style.animation = 'none';
+      item.offsetHeight; // reflow
+      item.style.animation = '';
     }
-
   });
 }
+
+let activeFilterBtn = filterBtns[0];
+filterBtns.forEach((btn) => {
+  btn.addEventListener('click', function () {
+    const val = this.textContent.toLowerCase();
+    if (selectVal) selectVal.textContent = this.textContent;
+    filterProjects(val);
+    activeFilterBtn?.classList.remove('active');
+    this.classList.add('active');
+    activeFilterBtn = this;
+  });
+});
+
+// Mobile select dropdown
+if (selectBox) {
+  selectBox.addEventListener('click', function (e) {
+    e.stopPropagation();
+    this.closest('.filter-select-box').classList.toggle('active');
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelector('.filter-select-box')?.classList.remove('active');
+  });
+}
+
+selectItems.forEach((item) => {
+  item.addEventListener('click', function () {
+    const val = this.textContent.toLowerCase();
+    if (selectVal) selectVal.textContent = this.textContent;
+    filterProjects(val);
+    this.closest('.filter-select-box')?.classList.remove('active');
+    filterBtns.forEach((b) => {
+      b.classList.toggle('active', b.textContent.toLowerCase() === val);
+    });
+  });
+});
